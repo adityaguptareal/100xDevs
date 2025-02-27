@@ -8,15 +8,18 @@ function Signup() {
     const [data, setData] = useState("")
     useEffect(() => {
 
-        if(data==""){
+        if (data == "") {
             setbtn(true)
         }
-        else(
+        else (
             setbtn(false)
         )
-    }, [data])
-    
-  
+    }, [data]) 
+
+ 
+    // Improving User Interface  
+
+
     return (
         <div className='h-screen w-screen bg-primary flex justify-start py-30 flex-col items-center'>
             <main className='flex flex-col gap-5 justify-center items-center'>
@@ -37,14 +40,14 @@ function Signup() {
 
                         }} />
 
-                        
-                <Button onClick={()=>{
-                    
-                    if(data==""){
+
+                <Button onClick={() => {
+
+                    if (data == "") {
                         console.log("Get clicked")
                         toast.error("Please Enter Date of Birthh")
                     }
-                    else{
+                    else {
                         console.log("Get clicked")
                         toast.success("Succefully Submited")
                     }
