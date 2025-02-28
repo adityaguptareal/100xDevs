@@ -19,7 +19,6 @@ function Signup() {
  
     // Improving User Interface  
 
-
     return (
         <div className='h-screen w-screen bg-primary flex justify-start py-30 flex-col items-center'>
             <main className='flex flex-col gap-5 justify-center items-center'>
@@ -51,7 +50,7 @@ function Signup() {
                         console.log("Get clicked")
                         toast.success("Succefully Submited")
                     }
-                }} btnStatus={btn} >Continue</Button>
+                }} btnStatus={btn} >Continue Click</Button>
 
             </main>
 
