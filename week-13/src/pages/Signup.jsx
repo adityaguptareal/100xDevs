@@ -32,7 +32,7 @@ function Signup() {
                 <div className='text-[40px] font-bold py-16'>Verify Your Age</div>
                 <p className='text-text text-center '>Please confirm your birth year. This data will not be stored. </p>
 
-                <input className='outline-none bg-secondary text-slate-400 w-9/12  px-3 py-3 rounded-lg' placeholder='Your Birth Year' value={data} type="text" name="" id=""
+                <input className='outline-white border-none bg-secondary text-slate-400 w-9/12  px-3 py-3 rounded-lg' placeholder='Your Birth Year' value={data} type="text" name="" id=""
                     onChange={
                         (e) => {
                             setData(e.target.value)
