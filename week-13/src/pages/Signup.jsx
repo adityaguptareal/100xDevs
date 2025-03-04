@@ -47,7 +47,7 @@ function Signup() {
                         toast.error("Please Enter Date of Birthh")
                     }
                     else {
-                        console.log("Get clicked")
+                        console.log("Got Clicked")
                         toast.success("Succefully Submited")
                     }
                 }} btnStatus={btn} >Continue Click</Button>
