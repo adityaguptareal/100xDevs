@@ -18,6 +18,7 @@ function Signup() {
 
  
     // Improving User Interface  
+    // Improving User Interface By Adding Styling Toast Notification
 
     return (
         <div className='h-screen w-screen bg-primary flex justify-start py-30 flex-col items-center'>
