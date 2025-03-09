@@ -5,7 +5,7 @@ import MenuBar from "./Components/Icons/MenuBar";
 // import OTPSignup from "./pages/OTPSignup";
 
 function App() {
-  const [sidebar, setsidebar] = useState(true);
+  const [sidebar, setsidebar] = useState(false);
   return (
     <>
       <div className="flex h-full w-full">
@@ -21,8 +21,8 @@ function Sidebar({ setsidebar, sidebar }) {
     <>
       <div
         className={`bg-blue-500   h-screen ${
-          sidebar ? " w-full md:w-[15%]  " : "w-fit "
-        } p-4 text-white  fixed top-0 left-0 z-10 md:relative `}
+          sidebar ? "w-[15%]  " : "w-fit "
+        } p-4 text-white  fixed top-0 left-0 z-10 md:relative w-full`}
       >
         <div
           className=" cursor-pointer px-3 py-3"
