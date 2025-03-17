@@ -12,7 +12,7 @@ export function Sidebar({ children }) {
     <aside className="h-screen ">
       <nav className={`h-full flex flex-col  gap-4 bg-white border-r shadow-sm text-white font-semibold py-4 px-0`}>
         <div className={`p-2 pb-2 flex text-xl  ${isOpen?"justify-between":"justify-center"} items-center`}>
-            <span className={`text-red-500 gap-1 text-2xl flex items-center ${isOpen?"w-fit ml-2":"w-0 ml-0"} transition-all ease-in-out overflow-hidden`}>
+            <span className={`text-blue-500 gap-2 text-3xl flex items-center ${isOpen?"w-fit ml-2":"w-0 ml-0"} transition-all ease-in-out overflow-hidden`}>
                 <IoLogoAngular color="red"  />
             Angular
             </span>         
