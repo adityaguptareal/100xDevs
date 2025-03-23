@@ -2,26 +2,12 @@
 // function greet(name:string):string{
 //     return "Hello"+name
 // }
-let user = {
+let person = {
     name: "Aditya",
     age: 21,
-    address: {
-        city: "Haryanya",
-        country: "India"
-    }
+    greet: () => {
+        return "Hello" + person.name;
+    },
 };
-function isLegal(user) {
-    if (user.age >= 18) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-let answer = isLegal(user);
-if (answer) {
-    console.log("User is Legal");
-}
-else {
-    console.log("User is not Legal");
-}
+let greeting = person.greet();
+console.log(greeting);
