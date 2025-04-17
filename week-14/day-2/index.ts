@@ -78,8 +78,18 @@ let person:Poeple={
 // let greeting=person.greet()
 // console.log(greeting)
 
+
 abstract class User {
-    constructor() {
+    name:string
+    constructor(name:string) {
+        this.name=name;
+    }
+   abstract greet:()=>
+}
+
+class employee implements User{
+    name: string;
+    constructor(name:string){
         
     }
 }
