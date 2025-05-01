@@ -100,14 +100,67 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
         return;
     }
 }));
-app.post("/api/v1/content", userAuthenticationMiddleware_1.userMiddleware, (req, res) => {
-    // const token=req.
-    res.status(200).json({ message: "you are authorised" });
-});
-app.get("/api/v1/content", (req, res) => {
-});
-app.delete("/api/v1/content", (req, res) => {
-});
+// Route for adding content
+app.post("/api/v1/content", userAuthenticationMiddleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const token = req.userid;
+    try {
+        const contentValidation = zod_1.z.object({
+            link: zod_1.z.string().min(3, { message: "link is required" }),
+            title: zod_1.z.string().min(3, { message: "Title is required" }),
+        });
+        const parseContent = contentValidation.safeParse(req.body);
+        if (!parseContent.success) {
+            res.status(400).json({ message: "Something went wrong", error: parseContent.error });
+            return;
+        }
+        let { title, type, link } = req.body;
+        const createContent = yield db_1.contentModel.create({
+            title,
+            link,
+            type,
+            userId: token,
+            tags: []
+        });
+        res.status(200).json({ message: "Contented added", content: createContent });
+    }
+    catch (error) {
+        res.status(411).json({ message: "Something went wroong", error: error });
+    }
+}));
+app.get("/api/v1/content", userAuthenticationMiddleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //@ts-ignore
+        const token = req.userid;
+        const gettingContent = yield db_1.contentModel.find({
+            userId: token
+        }).populate("userId", 'username email password');
+        console.log(gettingContent);
+        res.status(200).json({ conetents: gettingContent });
+    }
+    catch (error) {
+        res.status(411).json({ error: error });
+    }
+}));
+app.delete("/api/v1/content", userAuthenticationMiddleware_1.userMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const token = req.userid;
+    const contentId = req.body.contentId;
+    try {
+        let content = yield db_1.contentModel.findById(contentId);
+        //@ts-ignore
+        const { title } = content;
+        let deltetingRecords = yield db_1.contentModel.deleteMany({
+            userId: token, _id: contentId
+        });
+        console.log(content);
+        console.log(title);
+        res.status(200).json({ message: "Your content is deleted", title: title, id: contentId });
+    }
+    catch (error) {
+        res.status(411).json({ message: "Something went wrong", error: error });
+    }
+}));
 app.post("/api/v1/brain/share", (req, res) => {
 });
 app.get("/api/v1/brain/:shareLink", (req, res) => {
