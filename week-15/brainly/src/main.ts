@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { z } from "zod";
-import { userModel } from "./models/db";
-import { jwt_Secret,} from './config/credenitals';
+import { contentModel, userModel } from "./models/db";
+import { jwt_Secret, } from './config/credenitals';
 import { userMiddleware } from './middlewares/userAuthenticationMiddleware';
 
 
@@ -99,14 +99,73 @@ app.post("/api/v1/signin", async (req, res) => {
     }
 
 })
-app.post("/api/v1/content",userMiddleware, (req, res) => {
-    // const token=req.
-    res.status(200).json({ message: "you are authorised" })
-})
-app.get("/api/v1/content", (req, res) => {
+
+
+// Route for adding content
+app.post("/api/v1/content", userMiddleware, async (req, res) => {
+    //@ts-ignore
+    const token = req.userid
+    try {
+        const contentValidation = z.object({
+            link: z.string().min(3, { message: "link is required" }),
+            title: z.string().min(3, { message: "Title is required" }),
+        })
+        const parseContent = contentValidation.safeParse(req.body)
+        if (!parseContent.success) {
+            res.status(400).json({ message: "Something went wrong", error: parseContent.error })
+            return
+        }
+
+        let { title, type, link } = req.body
+
+        const createContent = await contentModel.create({
+            title,
+            link,
+            type,
+            userId: token,
+            tags: []
+
+        })
+
+        res.status(200).json({ message: "Contented added", content: createContent })
+    } catch (error) {
+        res.status(411).json({ message: "Something went wroong", error: error })
+    }
 
 })
-app.delete("/api/v1/content", (req, res) => {
+app.get("/api/v1/content", userMiddleware, async (req, res) => {
+    try {
+        //@ts-ignore
+        const token = req.userid
+        const gettingContent = await contentModel.find({
+            userId: token
+        }).populate("userId", 'username email ')
+
+        console.log(gettingContent)
+        res.status(200).json({ conetents: gettingContent })
+    } catch (error) {
+        res.status(411).json({ error: error })
+
+    }
+
+})
+app.delete("/api/v1/content", userMiddleware, async (req, res) => {
+    //@ts-ignore
+    const token = req.userid
+    const contentId = req.body.contentId
+    try {
+        let content = await contentModel.findById(contentId)
+        //@ts-ignore
+        const {title}=content 
+        let deltetingRecords = await contentModel.deleteMany({
+            userId: token, _id: contentId
+        })
+      
+        res.status(200).json({ message: "Your content is deleted", title: title, id: contentId })
+    } catch (error) {
+        res.status(411).json({ message: "Something went wrong", error: error })
+
+    }
 
 })
 app.post("/api/v1/brain/share", (req, res) => {
@@ -119,12 +178,12 @@ app.get("/api/v1/brain/:shareLink", (req, res) => {
 
 async function main() {
     try {
-let dbConnectionString="mongodb+srv://adityaguptareal:dbadityaguptareal@cluster0.3rcjj.mongodb.net/brainly"
+        let dbConnectionString = "mongodb+srv://adityaguptareal:dbadityaguptareal@cluster0.3rcjj.mongodb.net/brainly"
         let connect = await mongoose.connect(dbConnectionString)
         console.log("Db Successfully connected")
     } catch (error) {
         console.log("error while connecting", error)
-        
+
     };
 
 
