@@ -9,4 +9,14 @@ const userSchema = new mongoose.Schema({
 
 export const userModel= mongoose.model("userData", userSchema);
 
+// content schema
+
+const contentSchema= new mongoose.Schema({
+    title:{type:String},
+    link:{type:String},
+    tags:[{type:mongoose.Types.ObjectId,ref:"Tag"}],
+    userId:{type:mongoose.Types.ObjectId,ref:"userData"}
+})
+
+export const contentModel=mongoose.model("content",contentSchema)
 
