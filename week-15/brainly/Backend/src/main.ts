@@ -226,7 +226,7 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
 
 async function main() {
     try {
-        let dbConnectionString = "mongodb+srv://adityaguptareal:dbadityaguptareal@cluster0.3rcjj.mongodb.net/brainly"
+        let dbConnectionString = ""
         let connect = await mongoose.connect(dbConnectionString)
         console.log("Db Successfully connected")
     } catch (error) {
