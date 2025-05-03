@@ -3,8 +3,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { z } from "zod";
-import { v4 as uuid } from 'uuid';
-import { contentModel, LinkModel, userModel } from "./models/db";
+import { contentModel, userModel } from "./models/db";
 import { jwt_Secret, } from './config/credenitals';
 import { userMiddleware } from './middlewares/userAuthenticationMiddleware';
 
@@ -142,6 +141,7 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
             userId: token
         }).populate("userId", 'username email ')
 
+        console.log(gettingContent)
         res.status(200).json({ conetents: gettingContent })
     } catch (error) {
         res.status(411).json({ error: error })
@@ -156,11 +156,11 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
     try {
         let content = await contentModel.findById(contentId)
         //@ts-ignore
-        const { title } = content
+        const {title}=content 
         let deltetingRecords = await contentModel.deleteMany({
             userId: token, _id: contentId
         })
-
+      
         res.status(200).json({ message: "Your content is deleted", title: title, id: contentId })
     } catch (error) {
         res.status(411).json({ message: "Something went wrong", error: error })
@@ -168,58 +168,10 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
     }
 
 })
-app.post("/api/v1/brain/share", userMiddleware, async (req: any, res) => {
-    try {
-        const hash = uuid()
-        const { share } = req.body
-        if (!share) {
-            res.status(400).json({ message: "Can't be share" })
-            return
-        }
-
-        const checkLink = await LinkModel.find({ userId: req.userid })
-        console.log(checkLink)
-        if (checkLink.length > 0) {
-            res.status(200).json({ message: "link already generated", sharelink: checkLink[0].hash })
-        } else {
-            const shareLink = await LinkModel.create({
-                //@ts-ignore
-                userId: req.userid,
-                hash: hash
-            })
-            console.log(shareLink)
-            res.status(200).json({ message: "share link generated", link: shareLink.hash })
-            
-        }
-
-    } catch (error) {
-        res.status(411).json({ message: "something went wrong", error: error })
-    }
-
+app.post("/api/v1/brain/share", (req, res) => {
 
 })
-app.get("/api/v1/brain/:shareLink", async (req, res) => {
-
-    try {
-        const hashedLink = req.params.shareLink
-        if (!hashedLink) {
-            res.status(400).json({ message: "Please check you link" })
-            return
-        }
-        const gettingUserId = await LinkModel.find({ hash: hashedLink })
-        if (!gettingUserId) {
-            res.status(400).json({ message: "link is not valid" })
-            return
-        }
-        const gettingContent = await contentModel.find({ userId: gettingUserId[0].userId })
-        const user= await userModel.findById(gettingUserId[0].userId)
-    
-        res.status(200).json({ content: gettingContent,user:user?.email })
-
-    } catch (error) {
-        res.status(411).json({ message: "Some thing went wrong", error: error })
-        return
-    }
+app.get("/api/v1/brain/:shareLink", (req, res) => {
 
 })
 
