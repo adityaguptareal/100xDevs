@@ -9,6 +9,7 @@ interface ButtonProps {
     iconColor?: 'text-white' | 'text-purple-700' | 'text-purple-500';
     onClick?: () => void;
     disabled?: boolean;
+    className?:String;
 }
 
 const buttonVariants = {
@@ -22,9 +23,9 @@ const buttonSizes = {
     large: 'text-lg py-3 px-6 rounded-lg',
 }
 
-export function Button({ onClick,variant, size, startIcon, endIcon, text,iconColor }: ButtonProps) {
+export function Button({ onClick,variant, size, disabled ,startIcon, endIcon, text,iconColor, className }: ButtonProps) {
     return (
-        <button onClick={onClick} className={`${buttonVariants[variant]} ${buttonSizes[size]}  flex items-center  justify-center`}>
+        <button disabled={disabled} onClick={onClick} className={`${buttonVariants[variant]}  ${buttonSizes[size]} ${className} flex items-center  justify-center`}>
             {startIcon && <span className={` pr-2 ${iconColor}`}>{startIcon}</span>}
             {text}
             {endIcon && <span className={` pr-2 ${iconColor}`}>{endIcon}</span>}
