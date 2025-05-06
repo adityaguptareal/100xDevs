@@ -12,7 +12,6 @@ function Signup() {
         async function onSubmit(data: Record<string, any>) {
             const {email,password,username}=data
             const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, { email, password, username }).then(response => {
-                console.log(response)
                 toast.success("Signup Successfully",{duration:5000})
                 navigate("/signup")
             }).catch(err => {
