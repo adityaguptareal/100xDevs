@@ -13,7 +13,6 @@ function Signin() {
         const { email, password, username } = data
         const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signin`, { email, password, username })
         .then(response => {
-        console.log(response)
         let token = response?.data?.token
         localStorage.setItem("SecondBrainToken",token)
         toast.success("Signin Successfully", { duration: 5000 })
