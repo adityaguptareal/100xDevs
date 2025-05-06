@@ -10,6 +10,7 @@ interface ButtonProps {
     onClick?: () => void;
     disabled?: boolean;
     className?:String;
+    type?: 'submit'
 }
 
 const buttonVariants = {
@@ -25,7 +26,7 @@ const buttonSizes = {
 
 export function Button({ onClick,variant, size, disabled ,startIcon, endIcon, text,iconColor, className }: ButtonProps) {
     return (
-        <button disabled={disabled} onClick={onClick} className={`${buttonVariants[variant]}  ${buttonSizes[size]} ${className} flex items-center  justify-center`}>
+        <button disabled={disabled} onSubmit={onClick} onClick={onClick} className={`${buttonVariants[variant]}  ${buttonSizes[size]} ${className} flex items-center  justify-center`}>
             {startIcon && <span className={` pr-2 ${iconColor}`}>{startIcon}</span>}
             {text}
             {endIcon && <span className={` pr-2 ${iconColor}`}>{endIcon}</span>}
