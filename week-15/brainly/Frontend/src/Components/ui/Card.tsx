@@ -17,7 +17,8 @@ function youtubeLinkConversion(link: string) {
 }
 
 export function Card({ title, link, type }: CardProps) {
-    
+    console.log("Converted YouTube Link:", youtubeLinkConversion(link));
+    console.log("Twitter Link:", link.replace("x.com", "twitter.com"));
     return (
         <div className="bg-white rounded-xl  p-4 border-gray-200 shadow border max-w-80 max-h-fit">
 
