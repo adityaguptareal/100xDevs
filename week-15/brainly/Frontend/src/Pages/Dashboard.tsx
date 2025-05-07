@@ -8,20 +8,63 @@ import { CreateContentModel } from '../Components/ui/CreateContentModel.tsx'
 import { useEffect, useState } from 'react'
 import { Sidebar } from '../Components/ui/Sidebar.tsx'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 function Dashboard() {
 
-  const [modalopen, setModalopen] = useState(false)
-  const navigate=useNavigate()
+  interface Content {
+    _id: string;
+    type: string;
+    link: string;
+    title: string;
+  }
 
-  useEffect(() => {
-    const jwtToken=localStorage.getItem("SecondBrainToken")
-    if(!jwtToken){
+  const [modalopen, setModalopen] = useState(false)
+  const navigate = useNavigate()
+  const [dashboardContent, setdashboardContent] = useState([])
+  const [loading, setLoading] = useState(false)
+
+
+  // Page validation
+  function pageValidation() {
+    const jwtToken = localStorage.getItem("SecondBrainToken")
+    if (!jwtToken) {
       navigate("/signup")
       return
     }
-  }, [])
-  
+  }
+
+
+  // getttingUserContent
+
+  async function userContent() {
+    setLoading(true);
+
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/content`, {
+        headers: { Authorization: localStorage.getItem("SecondBrainToken") },
+      });
+
+      console.log("Response from backend:", response.data.allContent);
+      const contentList = response.data.allContent
+      setdashboardContent(contentList)
+    } catch (err) {
+      console.log("Error fetching content:", err);
+    } finally {
+      setLoading(false);  // reset loading state
+    }
+  }
+
+
+  useEffect(() => {
+    pageValidation();
+    userContent();
+
+  }, []);
+
+
+
   return (
     <>
       <div className='flex bg-slate-50 min-h-screen gap-4 p-4'>
@@ -41,9 +84,19 @@ function Dashboard() {
 
 
           <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
-            <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
-            <Card type='twitter' title='Vibe Coding' link={"https://x.com/mannupaaji/status/1917960933558620508"} />
-            <Card type='twitter' title='Web 3 Hackathon' link={"https://x.com/shubhxm_mishra/status/1918431355483848730"} />
+            {/* <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
+              <Card type='twitter' title='Vibe Coding' link={"https://x.com/mannupaaji/status/1917960933558620508"} /> */}
+            <Card type='twitter' title='Web 3 Hackathon' link={"https://x.com/IMadeAGlitch/status/1919670248124657747"} />
+            {dashboardContent.map((content: Content) => (
+              <div key={content._id}>
+                <div>{content.title}</div>
+                <div>{content.type}</div>
+                <div>{content.link}</div>
+                <div>{content._id}</div>
+              </div>
+            ))}
+
+
           </div>
           {modalopen && <CreateContentModel setModalopen={setModalopen} />}
 
