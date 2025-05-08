@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '../Components/ui/Sidebar.tsx'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import toast from 'react-hot-toast'
+// Removed unused import
 
 function Dashboard() {
 
@@ -22,8 +22,8 @@ function Dashboard() {
 
   const [modalopen, setModalopen] = useState(false)
   const navigate = useNavigate()
-  const [dashboardContent, setdashboardContent] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [dashboardContent, setdashboardContent] = useState<Content[]>([])
+  const [loading, setLoading] = useState(false) // Retained for potential future use
 
 
   // Page validation
@@ -84,17 +84,16 @@ function Dashboard() {
 
 
           <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
-            {/* <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
-              <Card type='twitter' title='Vibe Coding' link={"https://x.com/mannupaaji/status/1917960933558620508"} /> */}
-            <Card type='twitter' title='Web 3 Hackathon' link={"https://x.com/IMadeAGlitch/status/1919670248124657747"} />
-            {dashboardContent.map((content: Content) => (
-              <div key={content._id}>
-                <div>{content.title}</div>
-                <div>{content.type}</div>
-                <div>{content.link}</div>
-                <div>{content._id}</div>
-              </div>
-            ))}
+            <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
+              <Card type='twitter' title='Vibe Coding' link={"https://x.com/mannupaaji/status/1917960933558620508"} />
+          {dashboardContent.map(content => (
+            <Card 
+              key={content._id} 
+              title={content.title} 
+              type={content.type === "youtube" || content.type === "twitter" ? content.type : "youtube"} 
+              link={content.link} 
+            />
+          ))}
 
 
           </div>
