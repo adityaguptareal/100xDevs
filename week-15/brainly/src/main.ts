@@ -142,7 +142,7 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
         }).populate("userId", 'username email ')
 
         console.log(gettingContent)
-        res.status(200).json({ conetents: gettingContent })
+        res.status(200).json({ allContent: gettingContent })
     } catch (error) {
         res.status(411).json({ error: error })
 

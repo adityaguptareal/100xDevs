@@ -5,12 +5,13 @@ import bcrypt from 'bcrypt';
 import { z } from "zod";
 import { v4 as uuid } from 'uuid';
 import { contentModel, LinkModel, userModel } from "./models/db";
-import { jwt_Secret, } from './config/credenitals';
+import { dbConnectionString, jwt_Secret, } from './config/credenitals';
 import { userMiddleware } from './middlewares/userAuthenticationMiddleware';
-
+import cors from "cors"
 
 const app = express();
 app.use(express.json())
+app.use(cors())
 const port = 3000
 
 
@@ -40,28 +41,44 @@ app.post("/api/v1/signup", async (req, res) => {
     const userName = req.body.username
     const password = req.body.password
     const email = req.body.email
+    
 
     if (!userName || !password || !email) {
         res.send("All fileds are required")
         return
     }
-    const hashedPassword = await bcrypt.hash(password, 8)
+const hashedPassword = await bcrypt.hash(password, 8);
 
-    try {
-        await userModel.create({
-            username: userName,
-            password: hashedPassword,
-            email: email
-        })
-
-        res.status(200).json({ message: "User created successfully", data: { username: userName, email: email } })
-
-    } catch (error) {
-        res.status(404).json({ message: "Error while creating user", error: error })
-        return
+try {
+    const checkingExistingUser = await userModel.findOne({ email: email });
+    if (checkingExistingUser) {
+        res.status(400).json({ message: "User already exists" });
+        return;
     }
 
-})
+    await userModel.create({
+        username: userName,
+        password: hashedPassword,
+        email: email
+    });
+
+    res.status(200).json({ message: "User created successfully", data: { username: userName, email: email } });
+} catch (error) {
+    if (error instanceof mongoose.Error && (error as any).code === 11000 && (error as any).keyPattern) {
+        const duplicateField = Object.keys((error as any).keyPattern)[0]; // e.g., "username" or "email"
+        const duplicateValue = (error as any).keyValue[duplicateField];
+        res.status(400).json({
+            message: `The ${duplicateField} '${duplicateValue}' is already taken.`,
+            field: duplicateField
+        });
+        return;
+    } else {
+        res.status(400).json({ message: "Error while creating user", error: error });
+        return;
+    }
+    
+}});
+
 app.post("/api/v1/signin", async (req, res) => {
     try {
         const userCredentials = z.object({
@@ -142,7 +159,7 @@ app.get("/api/v1/content", userMiddleware, async (req, res) => {
             userId: token
         }).populate("userId", 'username email ')
 
-        res.status(200).json({ conetents: gettingContent })
+        res.status(200).json({ allContent: gettingContent })
     } catch (error) {
         res.status(411).json({ error: error })
 
@@ -226,8 +243,8 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
 
 async function main() {
     try {
-        let dbConnectionString = ""
-        let connect = await mongoose.connect(dbConnectionString)
+        let connection_url = dbConnectionString
+        let connect = await mongoose.connect(connection_url)
         console.log("Db Successfully connected")
     } catch (error) {
         console.log("error while connecting", error)
