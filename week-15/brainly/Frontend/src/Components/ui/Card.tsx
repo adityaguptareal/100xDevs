@@ -1,6 +1,7 @@
 import { Delete } from "./Icons/Delete";
 import { Document } from "./Icons/Document";
 import { Share } from "./Icons/Share";
+import { useEffect, useRef } from "react";
 
 interface CardProps {
     title: string;
@@ -16,7 +17,48 @@ function youtubeLinkConversion(link: string) {
     return link; 
 }
 
+function twitterLinkConversion(link:string) {
+        // Handle Twitter/X.com embedding errors
+        if (link.includes('twitter.com') || link.includes('x.com')) {
+            // Convert x.com to twitter.com
+            const twitterLink = link.replace('x.com', 'twitter.com');
+            // Add oembed endpoint to fetch embeddable content
+            return `https://publish.twitter.com/oembed?url=${encodeURIComponent(twitterLink)}`;
+        }
+        return link;
+}
+
 export function Card({ title, link, type }: CardProps) {
+    const twitterRef = useRef<HTMLDivElement>(null);
+useEffect(() => {
+    // Load Twitter widgets when component mounts and type is twitter
+    if (type === "twitter" && twitterRef.current) {
+        const loadTwitterWidget = () => {
+            if (window.twttr) {
+                window.twttr.widgets.load(twitterRef.current || undefined);
+                return true;
+            }
+            return false;
+        };
+
+        // Try to load immediately first
+        if (!loadTwitterWidget()) {
+            // If not loaded yet, wait for it
+            const interval = setInterval(() => {
+                if (loadTwitterWidget()) {
+                    clearInterval(interval);
+                }
+            }, 100);
+
+            // Clear interval on component unmount
+            return () => clearInterval(interval);
+        }
+    }
+}, [type]);
+            }
+        }
+    }, [link, type]);
+    
     console.log("Converted YouTube Link:", youtubeLinkConversion(link));
     console.log("Twitter Link:", link.replace("x.com", "twitter.com"));
     return (
@@ -41,11 +83,13 @@ export function Card({ title, link, type }: CardProps) {
                 
                 {type === "youtube" && <iframe className="w-full" src={youtubeLinkConversion(link)} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" ></iframe>
                 }
-                {type === "twitter" && <blockquote className="twitter-tweet">
-                    <a href={link.replace("x.com", "twitter.com")}></a>
-               
-
-                </blockquote>}
+                {type === "twitter" && 
+                    <div ref={twitterRef}>
+                        <blockquote className="twitter-tweet">
+                            <a href={link.replace('x.com', 'twitter.com')}>{title}</a>
+                        </blockquote>
+                    </div>
+                }
 
             </div>
         </div>
