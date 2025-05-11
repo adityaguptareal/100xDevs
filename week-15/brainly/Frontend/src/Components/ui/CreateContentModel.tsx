@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-export function CreateContentModel({ setModalopen }: { setModalopen: (value: boolean) => void }) {
+export function CreateContentModel({ setModalopen, refreshContent }: { setModalopen: (value: boolean) => void, refreshContent: () => void }) {
     const [loading, setLoading] = useState(false)
     const {
         register,
@@ -21,38 +21,39 @@ export function CreateContentModel({ setModalopen }: { setModalopen: (value: boo
 
     const onSubmit = (data: any) => {
         const { contentType, link, title } = data;
-        
-        if (!title || !link) {
-            console.error("Validation failed: Title and Link are required.");
+
+        // Validate Twitter links
+        if (contentType === "twitter" && (!link.includes("/status/") || link.split("/status/")[1].trim() === "")) {
+            toast.error("Invalid Twitter link. Please provide a valid link with a status ID.");
             return;
         }
-        
-        const contentData :contentPostData= {
+
+        const contentData: contentPostData = {
             title: title,
             link: link,
-            type: contentType
+            type: contentType,
         };
-        
-        setLoading(true)
-     toast.promise(   
-        axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/content`, contentData, {
-        headers: { Authorization: localStorage.getItem("SecondBrainToken") }
-    })
-    .then(response => {
-       
-        console.log("Response:", response);
-        console.log(response.data?.message || "Content Added" );
-    })
-    .catch(error => {
-        console.error("Error:", error.response?.data || error.message);
-        toast.error(error?.message || "Something went Wrong")
-    }),{
-        loading:"Adding Content",
-        success:"Content Added"
-    }).finally(()=>{
-        setLoading(false)
-        setModalopen(false);
-    })
+
+        setLoading(true);
+        toast.promise(
+            axios
+                .post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/content`, contentData, {
+                    headers: { Authorization: localStorage.getItem("SecondBrainToken") },
+                })
+                .then((response) => {
+                    toast.success(response.data?.message || "Content Added");
+                })
+                .catch((error) => {
+                    toast.error(error?.message || "Unexpected Error");
+                }),
+            {
+                loading: "Adding Content",
+            }
+        ).finally(() => {
+            setLoading(false);
+            setModalopen(false);
+            refreshContent();
+        });
     };
 
     return (

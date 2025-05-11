@@ -9,6 +9,10 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '../Components/ui/Sidebar.tsx'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import toast from 'react-hot-toast'
+import { Tweet } from 'react-tweet'
+import TweetCard from '../Components/ui/TweetCard.tsx'
+
 // Removed unused import
 
 function Dashboard() {
@@ -46,11 +50,12 @@ function Dashboard() {
         headers: { Authorization: localStorage.getItem("SecondBrainToken") },
       });
 
-      console.log("Response from backend:", response.data.allContent);
+
       const contentList = response.data.allContent
       setdashboardContent(contentList)
     } catch (err) {
-      console.log("Error fetching content:", err);
+
+      toast.error("Error fetching content")
     } finally {
       setLoading(false);  // reset loading state
     }
@@ -85,19 +90,23 @@ function Dashboard() {
 
           <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
             <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
-              <Card type='twitter' title='Vibe Coding' link={"https://x.com/mannupaaji/status/1917960933558620508"} />
-          {dashboardContent.map(content => (
-            <Card 
-              key={content._id} 
-              title={content.title} 
-              type={content.type === "youtube" || content.type === "twitter" ? content.type : "youtube"} 
-              link={content.link} 
-            />
-          ))}
+
+            {dashboardContent.map(content => (
+              content.type === "youtube" ? (
+              <Card
+                key={content._id}
+                title={content.title}
+                type="youtube"
+                link={content.link}
+              />
+              ) : (
+              <TweetCard link={content.link} title={content.title} />
+              )
+            ))}
 
 
           </div>
-          {modalopen && <CreateContentModel setModalopen={setModalopen} />}
+          {modalopen && <CreateContentModel setModalopen={setModalopen} refreshContent={userContent} />}
 
 
 
