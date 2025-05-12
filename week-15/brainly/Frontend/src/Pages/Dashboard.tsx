@@ -53,6 +53,7 @@ function Dashboard() {
 
       const contentList = response.data.allContent
       setdashboardContent(contentList)
+      console.log(contentList)
     } catch (err) {
 
       toast.error("Error fetching content")
@@ -92,17 +93,14 @@ function Dashboard() {
             <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
 
             {dashboardContent.map(content => (
-              content.type === "youtube" ? (
+             console.log(content),
               <Card
                 key={content._id}
                 title={content.title}
-                type="youtube"
+                type={content.type}
                 link={content.link}
               />
-              ) : (
-              <TweetCard link={content.link} title={content.title} />
-              )
-            ))}
+              ))}
 
 
           </div>

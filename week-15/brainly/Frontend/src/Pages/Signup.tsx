@@ -13,7 +13,7 @@ function Signup() {
             const {email,password,username}=data
             const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, { email, password, username }).then(response => {
                 toast.success("Signup Successfully",{duration:5000})
-                navigate("/signup")
+                navigate("/signin")
             }).catch(err => {
                 if (axios.isAxiosError(err)) {
                     const message = err.response?.data?.message || "Something went wrong";
