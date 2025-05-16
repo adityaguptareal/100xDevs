@@ -2,6 +2,7 @@ import { Tweet } from "react-tweet";
 import { Delete } from "./Icons/Delete";
 import { Document } from "./Icons/Document";
 import { Share } from "./Icons/Share";
+import { Twitter, Youtube } from "lucide-react";
 
 interface CardProps {
     title: string;
@@ -20,6 +21,8 @@ function youtubeLinkConversion(link: string) {
 }
 
 
+
+
 function YoutubeCard({ title, link, type, id }: CardProps) {
     return (
         <>
@@ -28,10 +31,10 @@ function YoutubeCard({ title, link, type, id }: CardProps) {
                 <div className="flex justify-between items-center px-2">
                     <div className="flex items-center gap-2 ">
                         <span className="text-gray-500">
-                            <Document size="md" />
+                            <Youtube color="#0f0f0f" />
                         </span>
                         <div className="text-gray-700 font-medium">{title}</div>
-                        <span className="text-sm text-gray-800 bg-purple-700/20">{type}</span>
+                        <span className="text-sm text-white bg-purple-700/50 px-3  rounded-full">{type}</span>
                     </div>
                     <div className="flex gap-4 text-gray-500">
                         <span className="cursor-pointer">
@@ -65,7 +68,7 @@ function YoutubeCard({ title, link, type, id }: CardProps) {
 function TweetCard({ title, link, type, id }: CardProps) {
     // Use the passed id prop if available, otherwise extract from link
     const tweetId = (link.includes("/status/") ? link.split("/status/")[1] : '');
-    
+
     return (
         <>
             <div id={String(id)} data-theme="light" className="bg-white rounded-xl light p-4 border-gray-200 shadow border max-w-80 max-h-fit">
@@ -73,10 +76,10 @@ function TweetCard({ title, link, type, id }: CardProps) {
                 <div className="flex justify-between items-center px-2">
                     <div className="flex items-center gap-2 ">
                         <span className="text-gray-500">
-                            <Document size="md" />
+                            <Twitter color="#0f0f0f" />
                         </span>
                         <div className="text-gray-700 font-medium">{title}</div>
-                        <span className="text-sm text-gray-800 bg-purple-700/20">{type}</span>
+                        <span className="text-sm text-white bg-purple-700/50 px-3 rounded-full">{type}</span>
 
                     </div>
                     <div className="flex gap-4 text-gray-500">
@@ -90,6 +93,7 @@ function TweetCard({ title, link, type, id }: CardProps) {
                 </div>
 
                 {tweetId && <Tweet id={tweetId} />}
+              
 
             </div>
         </>
@@ -106,7 +110,7 @@ export function Card({ title, link, type, id }: CardProps) {
     return (
 
         <>
-            {type == "twitter" && <TweetCard link={link} type={type} title={title} />}
+            {type == "twitter" && <TweetCard link={link} type={type} title={title} id={id} />}
             {type == "youtube" && <YoutubeCard link={link} type={type} title={title} id={id} />}
 
         </>

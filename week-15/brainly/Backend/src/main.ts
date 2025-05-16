@@ -16,7 +16,7 @@ const port = 3000
 
 
 
-app.get("/api/v1/", (req, res) => {
+app.get("/api/v1/", (_req, res) => {
     res.send("Api is working properly")
 })
 
@@ -174,7 +174,7 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
         let content = await contentModel.findById(contentId)
         //@ts-ignore
         const { title } = content
-        let deltetingRecords = await contentModel.deleteMany({
+        await contentModel.deleteMany({
             userId: token, _id: contentId
         })
 
@@ -224,14 +224,14 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
             return
         }
         const gettingUserId = await LinkModel.find({ hash: hashedLink })
-        if (!gettingUserId) {
+        if (!gettingUserId || gettingUserId.length === 0) {
             res.status(400).json({ message: "link is not valid" })
             return
         }
         const gettingContent = await contentModel.find({ userId: gettingUserId[0].userId })
         const user= await userModel.findById(gettingUserId[0].userId)
     
-        res.status(200).json({ content: gettingContent,user:user?.email })
+        res.status(200).json({ content: gettingContent, user: user?.email })
 
     } catch (error) {
         res.status(411).json({ message: "Some thing went wrong", error: error })
@@ -244,7 +244,7 @@ app.get("/api/v1/brain/:shareLink", async (req, res) => {
 async function main() {
     try {
         let connection_url = dbConnectionString
-        let connect = await mongoose.connect(connection_url)
+        await mongoose.connect(connection_url)
         console.log("Db Successfully connected")
     } catch (error) {
         console.log("error while connecting", error)

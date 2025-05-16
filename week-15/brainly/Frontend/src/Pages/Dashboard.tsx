@@ -10,10 +10,7 @@ import { Sidebar } from '../Components/ui/Sidebar.tsx'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { Tweet } from 'react-tweet'
-import TweetCard from '../Components/ui/TweetCard.tsx'
 
-// Removed unused import
 
 function Dashboard() {
 
@@ -90,17 +87,17 @@ function Dashboard() {
 
 
           <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
-            <Card type='youtube' title='Gaming post' link={"https://www.youtube.com/watch?v=YvBaRWzOyqM"} />
-
-            {dashboardContent.map(content => (
-             console.log(content),
-              <Card
-                key={content._id}
-                title={content.title}
-                type={content.type}
-                link={content.link}
-              />
-              ))}
+            {dashboardContent.length == 0 ? <div className='text-center text-2xl text-gray-800'> No any Content is Available</div> :
+              dashboardContent.map(content => (
+                console.log(content),
+                <Card
+                  key={content._id}
+                  title={content.title}
+                  type={content.type as "youtube" | "twitter"}
+                  link={content.link}
+                />
+              ))
+            }
 
 
           </div>
