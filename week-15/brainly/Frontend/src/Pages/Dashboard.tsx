@@ -29,10 +29,9 @@ function Dashboard() {
 
   // Page validation
   function pageValidation() {
-    const jwtToken = localStorage.getItem("SecondBrainToken")
-    if (!jwtToken) {
-      navigate("/signup")
-      return
+    const user = localStorage.getItem("SecondBrainUser");
+    if (!user) {
+      navigate("/signup");
     }
   }
 
@@ -50,7 +49,6 @@ function Dashboard() {
 
       const contentList = response.data.allContent
       setdashboardContent(contentList)
-      console.log(contentList)
     } catch (err) {
 
       toast.error("Error fetching content")
@@ -72,7 +70,7 @@ function Dashboard() {
     <>
       <div className='flex bg-slate-50 min-h-screen gap-4 p-4'>
         <Sidebar />
-        <div className=''>
+        <div className='w-full'>
           <div className='flex gap-3 items-center justify-end'>
             <Button
               variant='primary'
@@ -89,12 +87,13 @@ function Dashboard() {
           <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
             {dashboardContent.length == 0 ? <div className='text-center text-2xl text-gray-800'> No any Content is Available</div> :
               dashboardContent.map(content => (
-                console.log(content),
                 <Card
+                  id={content._id}
                   key={content._id}
                   title={content.title}
                   type={content.type as "youtube" | "twitter"}
                   link={content.link}
+                  refreshContent={userContent}
                 />
               ))
             }

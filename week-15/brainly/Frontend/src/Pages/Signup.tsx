@@ -6,25 +6,27 @@ import { useNavigate } from "react-router-dom";
 
 
 function Signup() {
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors, isSubmitting }, } = useForm()
 
-        async function onSubmit(data: Record<string, any>) {
-            const {email,password,username}=data
-            const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, { email, password, username }).then(response => {
-                toast.success("Signup Successfully",{duration:5000})
-                navigate("/signin")
-            }).catch(err => {
-                if (axios.isAxiosError(err)) {
-                    const message = err.response?.data?.message || "Something went wrong";
-                    toast.error(message, { duration: 5000 });
-         
-                } else {
-                    toast.error("An unexpected error occurred", { duration: 5000 });
-                }
-            })
-    
-        }
+    async function onSubmit(data: Record<string, any>) {
+        let { email, password, username } = data;
+        email = email.toLowerCase();
+
+        const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signup`, { email, password, username }).then(response => {
+            toast.success("Signup Successfully", { duration: 5000 })
+            navigate("/signin")
+        }).catch(err => {
+            if (axios.isAxiosError(err)) {
+                const message = err.response?.data?.message || "Something went wrong";
+                toast.error(message, { duration: 5000 });
+
+            } else {
+                toast.error("An unexpected error occurred", { duration: 5000 });
+            }
+        })
+
+    }
 
 
     return (
@@ -97,7 +99,7 @@ function Signup() {
                     </div>
 
                     <div>
-                        <Button disabled={isSubmitting} size="large" variant="primary" text={"SIGN"} className={"w-full"} />
+                        <Button disabled={isSubmitting} size="large" variant="primary" text={isSubmitting ? "Sign up..." : "Sign up"} className={"w-full"} />
                     </div>
                 </form>
 
