@@ -7,7 +7,7 @@ const pgClients = new Client("postgresql://neondb_owner:npg_b9xqAklcX8js@ep-whit
 pgClients.connect()
 app.use(express.json())
 app.post("/signup", (req, res) => {
-    const { username, email, password } = req.body
+    const { username, email, password,city,country,street,pincode } = req.body
 
     // Another Way
     // const pgClients = new Client({
@@ -26,7 +26,7 @@ app.post("/signup", (req, res) => {
     // Can cause SQL Injection Problem
     // const insertQuery = `INSERT INTO users (username,email,password) VALUES (${username},{$email},${password})`;
     try {
-        const insertQuery = `INSERT INTO users (username,email,password) VALUES ($1,$2,$3)`;
+        const insertQuery = `INSERT INTO user (username,email,password) VALUES ($1,$2,$3)`;
         const responseQuery = pgClients.query(insertQuery, [username, email, password])
         console.log(responseQuery)
     } catch (error) {
