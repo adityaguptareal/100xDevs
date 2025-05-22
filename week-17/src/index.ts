@@ -10,21 +10,21 @@ app.post("/signup", (req, res) => {
     const { username, email, password,city,country,street,pincode } = req.body
 
     // Another Way
-    // const pgClients = new Client({
-    //     user: "neondb_owner",
-    //     password: "npg_b9xqAklcX8js",
-    //     port: 5432,
-    //     host: "ep-white-cell-a1q5cnve-pooler.ap-southeast-1.aws.neon.tech",
-    //     database: "neondb"
-    // })
+    const pgClients = new Client({
+        user: "neondb_owner",
+        password: "npg_b9xqAklcX8js",
+        port: 5432,
+        host: "ep-white-cell-a1q5cnve-pooler.ap-southeast-1.aws.neon.tech",
+        database: "neondb"
+    })
 
 
-    // const response= await pgClients.query("SELECT * FROM Users")
-    // const response= await pgClients.query("UPDATE users SET password='Ak9955594@' WHERE email='adityaguptapro@gmail.com'")
+    const response= await pgClients.query("SELECT * FROM Users")
+    const response= await pgClients.query("UPDATE users SET password='Ak9955594@' WHERE email='adityaguptapro@gmail.com'")
 
 
     // Can cause SQL Injection Problem
-    // const insertQuery = `INSERT INTO users (username,email,password) VALUES (${username},{$email},${password})`;
+    const insertQuery = `INSERT INTO users (username,email,password) VALUES (${username},{$email},${password})`;
     try {
         const insertQuery = `INSERT INTO user (username,email,password) VALUES ($1,$2,$3)`;
         const responseQuery = pgClients.query(insertQuery, [username, email, password])
