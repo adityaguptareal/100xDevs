@@ -10,13 +10,16 @@ function Signin() {
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm()
 
     async function onSubmit(data: Record<string, any>) {
-        const { email, password, username } = data
+        let { email, password, username } = data    
+        email = email.toLowerCase();
         const sendingData = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/signin`, { email, password, username })
         .then(response => {
-        let token = response?.data?.token
-        localStorage.setItem("SecondBrainToken",token)
-        toast.success("Signin Successfully", { duration: 5000 })
-        navigate("/dashboard")
+            let token = response?.data?.token;
+            let user = response?.data?.user;
+            localStorage.setItem("SecondBrainToken", token);
+            localStorage.setItem("SecondBrainUser", JSON.stringify(user));
+            toast.success("Signin Successfully", { duration: 5000 });
+            navigate("/dashboard");
         }).catch(err => {
             if (axios.isAxiosError(err)) {
                 const message = err.response?.data?.message || "Something went wrong";
@@ -83,7 +86,7 @@ function Signin() {
                     </div>
 
                     <div>
-                        <Button disabled={isSubmitting} size="large" variant="primary" text={"SIGN IN"} className={"w-full"} />
+                        <Button disabled={isSubmitting} size="large" variant="primary" text={ isSubmitting ? "SIGN IN ..." : "SIGN IN"} className={"w-full"} />
                     </div>
                 </form>
 
