@@ -1,4 +1,3 @@
-
 import '../App.css'
 import { Plus } from '../Components/ui/Icons/Plus.tsx'
 import { Button } from '../Components/ui/Button'
@@ -10,12 +9,11 @@ import { Sidebar } from '../Components/ui/Sidebar.tsx'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import {DashboardContext} from '../Context/DashboardContenxt.tsx'
-
-
+import { DashboardContext } from '../Context/DashboardContext.tsx'
+import { SidebarContext } from '../Context/SidebarContext.tsx'
 function Dashboard() {
-    const { content, setContent } = useContext(DashboardContext);
-
+  const { content, setContent, setOriginalContent } = useContext(DashboardContext);
+  const { open, setOpen } = useContext(SidebarContext);
   interface Content {
     _id: string;
     type: string;
@@ -29,7 +27,7 @@ function Dashboard() {
   function pageValidation() {
     const token = localStorage.getItem("SecondBrainToken");
     const user = localStorage.getItem("SecondBrainUser");
-    
+
     if (!token || !user) {
       localStorage.clear(); // Clear any partial auth data
       navigate("/signin");
@@ -47,6 +45,7 @@ function Dashboard() {
 
       const contentList = response.data.allContent;
       setContent(contentList);
+      setOriginalContent(contentList);
     } catch (err) {
       toast.error("Error fetching content");
     }
@@ -63,45 +62,60 @@ function Dashboard() {
 
   return (
     <>
-      <div className='flex bg-slate-50 min-h-screen gap-4 p-4'>
+      <div className="flex flex-col min-h-screen bg-slate-50 md:flex-row gap-0 md:gap-4">
         <Sidebar />
-        <div className='w-full'>
-          <div className='flex gap-3 items-center justify-end'>
-            <Button
-              variant='primary'
-              size='medium'
-              text='Add Content' onClick={() => { setModalopen(true) }} startIcon={<Plus size='md' />} />
+        <div
+          className={`flex-1 pt-4 transition-all duration-300 ${
+        open ? "md:pl-24" : "md:pl-64"
+          } px-2 sm:px-4`}
+        >
+          <div className="flex flex-col gap-3 items-stretch sm:flex-row sm:items-center sm:justify-end">
+        <Button
+          variant="primary"
+          size="medium"
+          text="Add Content"
+          onClick={() => {
+            setModalopen(true);
+          }}
+          startIcon={<Plus size="md" />}
+        />
 
-            <Button
-              variant='secondary'
-              size='medium'
-              text='Share brain' startIcon={<Share size='md' />} />
+        <Button
+          variant="secondary"
+          size="medium"
+          text="Share brain"
+          startIcon={<Share size="md" />}
+        />
           </div>
 
-
-          <div className='grid grid-cols-4 gap-4 pt-10 ml-64'>
-            {content.length == 0 ? <div className='text-center text-xl text-gray-800'> No any Content is Available</div> :
-              content.map((item: Content) => (
-                <Card
-                  id={item._id}
-                  key={item._id}
-                  title={item.title}
-                  type={item.type as "youtube" | "twitter"}
-                  link={item.link}
-                  refreshContent={userContent}
-                />
-              ))
-            }
-
-
+          {content.length === 0 ? (
+        <div className="flex items-center justify-center w-full h-full py-10">
+          <div className="text-center text-md text-gray-800">
+            No any Content is Available
           </div>
-          {modalopen && <CreateContentModel setModalopen={setModalopen} refreshContent={userContent} />}
-
-
-
+        </div>
+          ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+          {content.map((item: any) => (
+            <Card
+          id={item._id}
+          key={item._id}
+          title={item.title}
+          type={item.type as "youtube" | "twitter"}
+          link={item.link}
+          refreshContent={userContent}
+            />
+          ))}
+        </div>
+          )}
+          {modalopen && (
+        <CreateContentModel
+          setModalopen={setModalopen}
+          refreshContent={userContent}
+        />
+          )}
         </div>
       </div>
-
     </>
   )
 }
