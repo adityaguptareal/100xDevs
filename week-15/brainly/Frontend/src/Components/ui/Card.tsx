@@ -4,8 +4,9 @@ import { Share } from "./Icons/Share";
 import { SiGitter, SiYoutube } from "react-icons/si";
 import axios from "axios";
 import toast from "react-hot-toast";
-import ShareContent from "./Icons/ShareContent";
+import ShareContent from "./ShareContent";
 import { useState } from "react";
+import { Trash } from "lucide-react";
 
 interface CardProps {
     title: string;
@@ -59,46 +60,50 @@ function YoutubeCard({ title, link, type, id, refreshContent }: CardProps) {
     return (
         <div
             id={String(id)}
-            className="bg-white rounded-xl p-4 border-gray-200 shadow border max-w-80 max-h-fit relative"
+            className="bg-white rounded-xl p-4 border-gray-200 shadow border w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl max-h-fit relative"
         >
             {/* Header */}
-            <div className="flex items-center justify-between px-2">
-                <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-gray-500 flex-shrink-0">
-                        <SiYoutube color="#0f0f0f" />
-                    </span>
-                    <div className="text-gray-700 font-medium truncate">{title}</div>
-                    <span className="text-sm text-white bg-purple-700/50 px-3 rounded-full flex-shrink-0">
-                        {type}
-                    </span>
-                </div>
-                <div className="flex gap-2 text-gray-500 ml-2 items-center flex-shrink-0 z-50">
-                    <button type="button" className="cursor-pointer" onClick={() => setShowShareContet(true)}>
-                        {showShareConent ? <ShareContent link={link} open={showShareConent} onClose={() => setShowShareContet(false)} /> : null}
-                        <span className="cursor-pointer">
-                            <Share size="xl" />
-                        </span>
-                    </button>
-                    <button className="cursor-pointer"
-                        type="button"
-                        onClick={() => {
-                            if (id) handleDelete(id, refreshContent);
-                        }}
-                    >
-                        <Delete size="xl" /> </button>
-                </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-2">
+            <div className="flex items-center gap-2 min-w-0 w-full">
+                <span className="text-gray-500 flex-shrink-0">
+                <SiYoutube color="#0f0f0f" />
+                </span>
+                <div className="text-gray-700 font-medium truncate flex-1">{title}</div>
+                <span className="text-sm text-white bg-purple-700/70 px-3 rounded-full flex-shrink-0">
+                {type}
+                </span>
+            </div>
+            <div className="flex gap-2 text-gray-500 mt-2 sm:mt-0 ml-0 sm:ml-2 items-center flex-shrink-0 z-50">
+                <button type="button" className="cursor-pointer" onClick={() => setShowShareContet(true)}>
+                {showShareConent ? <ShareContent link={link} open={showShareConent} onClose={() => setShowShareContet(false)} /> : null}
+                <span className="cursor-pointer">
+                    <Share size="md" />
+                </span>
+                </button>
+                 <button
+                type="button"
+                onClick={() => {
+                    if (id) handleDelete(id, refreshContent);
+                }}
+                className="cursor-pointer"
+                >
+                <Trash size={18} />
+                </button>
+            </div>
             </div>
 
             {/* Content */}
             <div className="py-4 pointer-events-none">
+            <div className="aspect-w-16 aspect-h-9 w-full">
                 <iframe
-                    className="w-full"
-                    src={youtubeLinkConversion(link)}
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    style={{ border: 0 }}
+                className="w-full h-full rounded-lg"
+                src={youtubeLinkConversion(link)}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ border: 0 }}
                 ></iframe>
+            </div>
             </div>
         </div>
     );
@@ -107,43 +112,43 @@ function YoutubeCard({ title, link, type, id, refreshContent }: CardProps) {
 function TweetCard({ title, link, type, id, refreshContent }: CardProps) {
     const tweetId = link.includes("/status/") ? link.split("/status/")[1] : "";
     const isValidTweetId = tweetId.length > 0;
-const [showShareConent, setShowShareContet] = useState(false)
+    const [showShareConent, setShowShareContet] = useState(false)
 
 
     return (
         <div
             id={String(id)}
             data-theme="light"
-            className="bg-white rounded-xl p-4 border-gray-200 shadow border max-w-80 max-h-fit"
+            className="bg-white rounded-xl p-4 border-gray-200 shadow border max-w-full sm:max-w-96 w-full max-h-fit"
         >
             {/* Header */}
-            <div className="flex justify-between items-center px-2">
-                <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-gray-500">
-                        <SiGitter color="#0f0f0f" />
-                    </span>
-                    <div className="text-gray-700 font-medium truncate">{title}</div>
-                    <span className="text-sm text-white bg-purple-700/50 px-3 rounded-full">
-                        {type}
-                    </span>
-                </div>
-                <div className="flex gap-2 text-gray-500 ml-2 items-center flex-shrink-0">
-                   <button type="button" className="cursor-pointer" onClick={() => setShowShareContet(true)}>
-                        {showShareConent ? <ShareContent link={link} open={showShareConent} onClose={() => setShowShareContet(false)} /> : null}
-                        <span className="cursor-pointer">
-                            <Share size="xl" />
-                        </span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (id) handleDelete(id, refreshContent);
-                        }}
-                        className="bg-red-500 text-white text-sm px-2 py-1 rounded hover:bg-red-600"
-                    >
-                        Delete
-                    </button>
-                </div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-2">
+            <div className="flex items-center gap-2 min-w-0 w-full">
+                <span className="text-gray-500 flex-shrink-0">
+                <SiGitter color="#0f0f0f" />
+                </span>
+                <div className="text-gray-700 font-medium truncate flex-1">{title}</div>
+                <span className="text-sm text-white bg-purple-700/70 px-3 rounded-full flex-shrink-0">
+                {type}
+                </span>
+            </div>
+            <div className="flex gap-2 text-gray-500 mt-2 sm:mt-0 ml-0 sm:ml-2 items-center flex-shrink-0">
+                <button type="button" className="cursor-pointer" onClick={() => setShowShareContet(true)}>
+                {showShareConent ? <ShareContent link={link} open={showShareConent} onClose={() => setShowShareContet(false)} /> : null}
+                <span className="cursor-pointer">
+                    <Share size="md" />
+                </span>
+                </button>
+                <button
+                type="button"
+                onClick={() => {
+                    if (id) handleDelete(id, refreshContent);
+                }}
+                className="cursor-pointer"
+                >
+                <Trash size={18} />
+                </button>
+            </div>
             </div>
 
             {/* Tweet */}
