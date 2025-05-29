@@ -1,7 +1,7 @@
 import { Brain, CircleEllipsis, FileMinus, ListCollapse, NotebookText, Twitter, Youtube } from "lucide-react";
 import { SidebarItems } from "./SidebarItems";
 import { useContext, useState } from "react";
-import { DashboardContext } from "../../Context/DashboardContenxt";
+import { DashboardContext } from "../../Context/DashboardContext";
 import { SidebarContext } from "../../Context/SidebarContext"; // Ensure SidebarContext is imported
 
 export function Sidebar() {
