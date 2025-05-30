@@ -37,7 +37,7 @@ export function Sidebar() {
     ]
 
     return (
-        <div className={`h-full bg-white absolute z-40 left-0 border-r border-gray-200 ${open ? "w-20 overflow-hidden" : "w-60"} flex flex-col gap-4 p-4`}>
+        <div className={`h-full bg-white fixed z-10 left-0 border-r border-gray-200 ${open ? "w-20 overflow-hidden" : "w-60"} flex flex-col gap-4 p-4`}>
             <div id="logo" className="border-b-[1px] border-gray-300 h-fit pb-2 flex justify-start relative cursor-pointer w-full gap-2 text-2xl font-bold text-purple-700">
                 <Brain size={40} color="#5046E4" />
                 <span className={`cursor-pointer ${open ? "hidden" : "block"}`}>Brainz</span>
