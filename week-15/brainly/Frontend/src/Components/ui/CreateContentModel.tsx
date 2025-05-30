@@ -57,7 +57,7 @@ export function CreateContentModel({ setModalopen, refreshContent }: { setModalo
     };
 
     return (
-        <div className="bg-black/75 w-screen backdrop-blur-sm fixed text-white h-screen inset-0 flex justify-center items-center">
+        <div className="bg-black/75 w-screen backdrop-blur-sm fixed z-50 text-white h-screen inset-0 flex justify-center items-center">
             <div className="bg-white rounded-lg py-6 px-7 border-gray-200 shadow border relative min-w-96 max-w-md max-h-fit">
                 <span onClick={() => setModalopen(false)} className="absolute cursor-pointer right-2 top-3">
                     <Cross size="size-8" />
