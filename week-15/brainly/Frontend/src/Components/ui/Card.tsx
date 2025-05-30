@@ -73,7 +73,7 @@ function YoutubeCard({ title, link, type, id, refreshContent }: CardProps) {
                 {type}
                 </span>
             </div>
-            <div className="flex gap-2 text-gray-500 mt-2 sm:mt-0 ml-0 sm:ml-2 items-center flex-shrink-0 z-50">
+            <div className="flex gap-2 text-gray-500 mt-2 sm:mt-0 ml-0 sm:ml-2 items-center flex-shrink-0 ">
                 <button type="button" className="cursor-pointer" onClick={() => setShowShareContet(true)}>
                 {showShareConent ? <ShareContent link={link} open={showShareConent} onClose={() => setShowShareContet(false)} /> : null}
                 <span className="cursor-pointer">
