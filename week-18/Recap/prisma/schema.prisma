@@ -21,6 +21,7 @@ model Users {
   password String 
   age Int
   city String
+  todo Todo[]
 }
 
 model Todo{
@@ -30,4 +31,5 @@ model Todo{
   done Boolean
   userId Int
   time DateTime 
+  user Users @relation(fields: [userId],references: [id])
 }

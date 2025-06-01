@@ -1,11 +1,14 @@
-import {PrismaClient} from "@prisma/client"
-// import { PrismaClient } from "./generated/prisma"
+import { PrismaClient } from "./generated/prisma"
+import express from "express"
+
+const app = express()
+const port=3000
 const client = new PrismaClient()
 
 async function main() {
 
 
-// Inserting Enteries 
+    // Inserting Enteries 
 
 
     // await client.users.create({
@@ -30,7 +33,7 @@ async function main() {
 
 
 
-// updating the records
+    // updating the records
 
 
     // await client.users.update({
@@ -44,10 +47,47 @@ async function main() {
 
 
 
-// Counting Records in the  
+    // Counting Records in the  
 
 
-//  const users=await client.users.count()
-//  console.log(users)   
+    //  const users=await client.users.count()
+    //  console.log(users)  
+
+
+
+
+
+
+
+    // await client.todo.create({
+    //     data: {
+    //         title: "Test todo",
+    //         description: "This is test data",
+    //         done: false,
+    //         time: new Date,
+    //         userId:1
+    //     }
+    // })
+
+
+
+    // getting data by referenceing
+
+    
+
+    const userTodo = await client.users.findFirst({
+        where: {
+            id: 1
+        },
+        select: {
+            todo: true
+        }
+    })
+
+
+
+    console.log(userTodo)
+
+
 }
 main()
