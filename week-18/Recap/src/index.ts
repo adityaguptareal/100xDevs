@@ -31,14 +31,14 @@ app.listen(port, () => {
 //     // Inserting Enteries 
 
 
-//     // await client.users.create({
-//     //     data: {
-//     //         email: "adityagupcxcsdtapro@gmail.com",
-//     //         age: 23,
-//     //         city: "Noidacsdc",
-//     //         password: "Ak184cds0319@",
-//     //     }
-//     // })
+    // await client.users.create({
+    //     data: {
+    //         email: "adityagupcxcsdtapro@gmail.com",
+    //         age: 23,
+    //         city: "Noidacsdc",
+    //         password: "Ak184cds0319@",
+    //     }
+    // })
 
 
 
@@ -53,17 +53,17 @@ app.listen(port, () => {
 
 
 
-//     // updating the records
+    // updating the records
 
 
-//     // await client.users.update({
-//     //     where: {
-//     //         email:"adityaguptapro@gmail.com"
-//     //     },
-//     //     data:{
-//     //         email:"adityakumargupta@gmail.com"
-//     //     }
-//     // })
+    // await client.users.update({
+    //     where: {
+    //         email:"adityaguptapro@gmail.com"
+    //     },
+    //     data:{
+    //         email:"adityakumargupta@gmail.com"
+    //     }
+    // })
 
 
 
