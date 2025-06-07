@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 export default function Signin() {
@@ -9,9 +10,11 @@ export default function Signin() {
     formState: { errors },
   } = useForm();
 
-  // Actual submit logic
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: any) => {
+    console.log(data)
+    const { username, password } = data
+    const backendData = await axios.post("http://localhost:3000/api/v1/signup", { username, password })
+
   };
 
   return (
@@ -54,10 +57,10 @@ export default function Signin() {
         )}
       </div>
 
-      {/* 👇 Button click calls handleSubmit */}
+
       <button
         className="rounded-full bg-amber-400 px-9 hover:cursor-pointer hover:text-white transition-all delay-200 ease-in py-2 font-semibold mt-4"
-        onClick={handleSubmit(onSubmit)} // 👈 this triggers validation + onSubmit
+        onClick={handleSubmit(onSubmit)}
       >
         Signin
       </button>
