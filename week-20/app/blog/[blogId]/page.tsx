@@ -1,17 +1,12 @@
-import axios from "axios"
-
-export default async function BlogPost({ params }: any) {
-    const postId = (await params).blogId;
-    const request = await axios.get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
-    const response = await request.data
-    return (
+import axios from "axios";
+export default async function dynamicRoutes({params}:any) {
+    const blogId= (await params).blogId
+    const gettingData= await axios.get(`https://jsonplaceholder.typicode.com/posts/${blogId}`)
+    const data= await gettingData.data
+    return(
         <div>
-
-            Blog page {postId} 
-            <br />
-            Blog Title {response.title}
-            <br />
-            Blog Boyd {response.body}
+            {data.title}
         </div>
     )
+    
 }
