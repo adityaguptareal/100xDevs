@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google";
 const handler = NextAuth({
     providers: [
         CredentialsProvider({
@@ -7,7 +8,7 @@ const handler = NextAuth({
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "jsmith" },
                 password: { label: "Password", type: "password" },
-                AdminPassword:{label:"Admin Password", type:"password"}
+                AdminPassword: { label: "Admin Password", type: "password" }
             },
             async authorize(credentials, req) {
                 const username = credentials?.username
@@ -22,11 +23,15 @@ const handler = NextAuth({
                 if (user) {
                     return user
                 }
-                else{
+                else {
                     return null
                 }
 
             }
+        })
+        , GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
         })
     ]
 
