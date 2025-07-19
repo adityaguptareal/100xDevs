@@ -1,5 +1,5 @@
 {
-  "name": "week-20.1",
+  "name": "nextauth",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.3.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "jsonwebtoken": "^9.0.2",
+    "next": "15.4.1",
     "next-auth": "^4.24.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -21,7 +23,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.3.3",
+    "eslint-config-next": "15.4.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
