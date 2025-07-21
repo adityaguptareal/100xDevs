@@ -5,6 +5,8 @@ interface user {
     room: string;
 }
 
+// code review
+
 let allSockets: user[] = []
 ws.on("connection", function (socket) {
 socket.on("message",(message)=>{
