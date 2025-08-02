@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 import express from "express"
+import cors from "cors"
 import {userRoutes} from "./controllers/routes/userRoutes"
+import {accountRoutes} from "./controllers/routes/accountRoutes"
 
 const app = express()
 require("dotenv").config()
 const port = process.env.PORT
 const db_URL = process.env.MONGODB_URl
 app.use(express.json())
+app.use(cors())
+
 app.use("/api/v1/user",userRoutes)
+app.use("/api/v1/accounts",accountRoutes)
+
 
 
 async function main() {
