@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express"
 import { userModel } from "../../models/userdb"
-import { email, json, z } from "zod"
+import { file, z } from "zod"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import userMiddleware from "../middleware/usermiddleware"
@@ -11,11 +11,12 @@ const JWT_SECRET = process.env.JWT_SECRET
 // Account Signup
 userRoutes.post("/signup", async (req: Request, res: Response) => {
     const signupSchema = z.object({
-        email: z.email(),
+        email: z.string().email(),
         password: z.string().min(8).max(20),
         firstName: z.string(),
         lastName: z.string()
     })
+
     try {
         const signupvalidation = signupSchema.safeParse(req.body)
         if (!signupvalidation.success) {
@@ -30,7 +31,7 @@ userRoutes.post("/signup", async (req: Request, res: Response) => {
             return;
         }
 
-        const userExist = await userModel.findOne(email)
+        const userExist = await userModel.findOne({ email })
         if (userExist) {
             res.status(200).json({ message: "User Already registered" })
             return;
@@ -80,95 +81,65 @@ userRoutes.post("/signin", async (req: Request, res: Response) => {
 
 })
 
-
-// Email Update
-userRoutes.put("/update-email", userMiddleware, async (req: Request, res: Response) => {
-    const { newEmail } = req.body
+userRoutes.put("/update-profile", userMiddleware, async (req: Request, res: Response) => {
     //@ts-ignore
-    const userId = req.userId
-    const gettingUser = await userModel.findById(userId)
-    if (!gettingUser) {
-        res.status(400).json({ message: "user id not found" })
-        return
-    }
-    try {
-        const updateEmail = await userModel.findByIdAndUpdate(userId, { email: newEmail })
-        res.status(200).json({ message: "Email updated" })
-    } catch (error) {
-
-        res.status(400).json({ message: "Something went wrong", error: error })
-    }
-
-
-})
-
-
-// User FirstName Update
-userRoutes.put("/update-firstName", userMiddleware, async (req: Request, res: Response) => {
-    const { newFirstName } = req.body
-    //@ts-ignore
-    const userId = req.userId
-    const gettingUser = await userModel.findById(userId)
-    if (!gettingUser) {
-        res.status(400).json({ message: "user id not found" })
-        return
-    }
-    try {
-        const updateFirstName = await userModel.findByIdAndUpdate(userId, { firstName: newFirstName })
-        res.status(200).json({ message: "First Name updated", newFirstName: newFirstName })
-        console.log(`👋 ${updateFirstName?.firstName} changes first name to ${newFirstName}`)
-    } catch (error) {
-
-        res.status(400).json({ message: "Something went wrong", error: error })
-    }
-
-
-})
-
-
-// User LastName Update
-userRoutes.put("/update-lastName", userMiddleware, async (req: Request, res: Response) => {
-    const { newLastName } = req.body
-    //@ts-ignore
-    const userId = req.userId
-    const gettingUser = await userModel.findById(userId)
-    if (!gettingUser) {
-        res.status(400).json({ message: "user id not found" })
-        return
-    }
-    try {
-        const updateLastName = await userModel.findByIdAndUpdate(userId, { lastName: newLastName })
-        res.status(200).json({ message: "First Name updated", newLastName: newLastName })
-        console.log(`👋 ${updateLastName?.firstName} changes last name to ${newLastName}`)
-    } catch (error) {
-
-        res.status(400).json({ message: "Something went wrong", error: error })
-    }
-
-
-})
-
-// User Password Update
-userRoutes.put("/update-password", userMiddleware, async (req: Request, res: Response) => {
-    const { newPassword } = req.body
-    //@ts-ignore
-    const userId = req.userId
-    const gettingUser = await userModel.findById(userId)
-    if (!gettingUser) {
-        res.status(400).json({ message: "user id not found" })
-        return
-    }
-    const hasshedPassword = await bcrypt.hash(newPassword, 10)
+    const userId = req.userId;
+    const { email, firstName, lastName, password } = req.body;
 
     try {
-        const updatePassword = await userModel.findByIdAndUpdate(userId, { password: hasshedPassword })
-        res.status(200).json({ message: "Password Updated" })
-        console.log(`👋 ${updatePassword?.firstName} changes password`)
+        const gettingUser = await userModel.findById(userId);
+        if (!gettingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const updateData: any = {};
+        if (email) updateData.email = email;
+        if (firstName) updateData.firstName = firstName;
+        if (lastName) updateData.lastName = lastName;
+        if (password) {
+            updateData.password = await bcrypt.hash(password, 10);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(userId, updateData, { new: true });
+        res.status(200).json({
+            message: "Profile updated successfully",
+            updatedUser: {
+                email: updatedUser?.email,
+                firstName: updatedUser?.firstName,
+                lastName: updatedUser?.lastName
+            }
+        });
+
+        console.log(`👋 ${gettingUser.firstName} updated profile details`);
+
     } catch (error) {
-        res.status(400).json({ message: "Something went wrong", error: error })
+        res.status(400).json({ message: "Something went wrong", error });
     }
+});
 
-
+userRoutes.get("/bulk", async (req, res) => {
+    try {
+        const query = req.query.filter
+        if (!query) {
+            const users = await userModel.find({})
+            res.status(200).json({ allUsers: users })
+        }
+        const users = await userModel.find({
+            $or: [
+                {
+                    firstName: { $regex: query, $options: "i" }
+                },
+                {
+                    lastName: { $regex: query, $options: "i" }
+                }
+            ]
+        })
+        res.status(200).json({
+            status: "Success", usrers: users
+        })
+    } catch (error) {
+        
+        res.status(400).json({ status: "error", message: error })
+    }
 })
 
 

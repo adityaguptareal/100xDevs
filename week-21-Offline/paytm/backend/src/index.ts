@@ -10,7 +10,6 @@ const port = process.env.PORT
 const db_URL = process.env.MONGODB_URl
 app.use(express.json())
 app.use(cors())
-
 app.use("/api/v1/user",userRoutes)
 app.use("/api/v1/accounts",accountRoutes)
 
