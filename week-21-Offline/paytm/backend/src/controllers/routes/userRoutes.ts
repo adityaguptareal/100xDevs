@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express"
-import { userModel } from "../../models/userdb"
+import { userModel, accountModel } from "../../models/userdb"
 import { file, z } from "zod"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -44,6 +44,10 @@ userRoutes.post("/signup", async (req: Request, res: Response) => {
             lastName,
             email,
             password: hasshedPassword
+        })
+        const initilaBalance = await accountModel.create({
+            userid: user.id,
+            balance:  parseFloat((Math.random() * (1000 - 100) + 100).toFixed(2))
         })
         console.log(`👋 ${email} is 🎉 signup at at ${new Date}`)
 
@@ -118,29 +122,41 @@ userRoutes.put("/update-profile", userMiddleware, async (req: Request, res: Resp
 
 userRoutes.get("/bulk", async (req, res) => {
     try {
-        const query = req.query.filter
+        const query = req.query.filter || ""
+
         if (!query) {
             const users = await userModel.find({})
-            res.status(200).json({ allUsers: users })
+            return res.status(200).json({
+                allUsers: users.map(user => ({
+                    username: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    createdAt: user.createdAt
+                }))
+            })
         }
+
         const users = await userModel.find({
             $or: [
-                {
-                    firstName: { $regex: query, $options: "i" }
-                },
-                {
-                    lastName: { $regex: query, $options: "i" }
-                }
+                { firstName: { $regex: query, $options: "i" } },
+                { lastName: { $regex: query, $options: "i" } }
             ]
         })
-        res.status(200).json({
-            status: "Success", usrers: users
+
+        return res.status(200).json({
+            status: "Success",
+            users: users.map(user => ({
+                username: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                createdAt: user.createdAt
+            }))
         })
     } catch (error) {
-        
-        res.status(400).json({ status: "error", message: error })
+        return res.status(400).json({ status: "error", message: error })
     }
 })
+
 
 
 
